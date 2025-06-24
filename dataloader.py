@@ -27,12 +27,13 @@ class DataGenerator(da.Dataset):
     def load_data_from_dir(self, data_path):
         for root, dirs, files in os.walk(data_path):
             for f in files:
-                if not f.endswith('.txt'):
+                if '.csv' not in f:
                     continue
 
                 txt_path = os.path.join(root, f)
                 with open(txt_path, 'r') as fr:
-                    lines = fr.readlines()
+                    # patrick note: skip first line since it has a header
+                    lines = fr.readlines()[1:]
 
                 # lines = lines[self.configs.data_period - 1::self.configs.data_period]
                 # while len(lines) > self.configs.inp_seq_len + self.configs.horizon:
@@ -163,7 +164,7 @@ class DataGenerator(da.Dataset):
             t_lon, t_lat, t_alt, t_spdx, t_spdy, t_spdz = [], [], [], [], [], []
 
             for record in seq:
-                items = record.strip().split("|")
+                items = record.strip().split(",")
                 data_time, lon, lat, alt, spdx, spdy, spdz = items[0], float(items[4]), float(items[5]), float(
                     items[6]), float(items[7]), float(items[8]), float(items[9])
 
