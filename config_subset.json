@@ -33,9 +33,9 @@
   "inp_seq_len": 9,
   "data_period": 10,
   "use_graycode":true,
-  "train_data": "/home/pdkao_google_com/wing-involi-autopilot-data/flightbert/train/",
-  "dev_data": "/home/pdkao_google_com/wing-involi-autopilot-data/flightbert/val/",
-  "test_data": "/home/pdkao_google_com/wing-involi-autopilot-data/flightbert/test/",
+  "train_data": "/home/pdkao_google_com/wing-involi-autopilot-data/flightbert/test_subset/",
+  "dev_data": "/home/pdkao_google_com/wing-involi-autopilot-data/flightbert/test_subset/",
+  "test_data": "/home/pdkao_google_com/wing-involi-autopilot-data/flightbert/test_subset/",
   "is_training": true,
   "model_path": "",
   "save_dir": "./check_points/"

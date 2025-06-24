@@ -33,7 +33,7 @@ class DataGenerator(da.Dataset):
                 txt_path = os.path.join(root, f)
                 with open(txt_path, 'r') as fr:
                     # patrick note: skip first line since it has a header
-                    lines = fr.readlines()[1:]
+                    lines = fr.readlines()
 
                 # lines = lines[self.configs.data_period - 1::self.configs.data_period]
                 # while len(lines) > self.configs.inp_seq_len + self.configs.horizon:
@@ -62,22 +62,42 @@ class DataGenerator(da.Dataset):
 
     def convert_lon2binary(self, lon):
         lon = round(lon, 3) * 1000
-        bin_lon = '{0:b}'.format(int(lon)).zfill(self.configs.lon_size)
-        bin_lon_list = [int(i) for i in bin_lon]
+        bin_lon = str(bin(int(lon)))
 
-        if self.configs.use_graycode:
-            bin_lon_list = binary2graycode(bin_lon_list)
+        if bin_lon.startswith('-0b'):
+            bin_lon = '{0:b}'.format(int(-lon)).zfill(self.configs.lon_size - 1)
+
+            if self.configs.use_graycode:
+                bin_lon = binary2graycode(bin_lon)
+
+            bin_lon_list = [1] + [int(i) for i in bin_lon]
+        else:
+            bin_lon = '{0:b}'.format(int(lon)).zfill(self.configs.lon_size)
+            if self.configs.use_graycode:
+                bin_lon = binary2graycode(bin_lon)
+
+            bin_lon_list = [int(i) for i in bin_lon]
 
         assert len(bin_lon_list) == self.configs.lon_size, "ERROR"
         return np.array(bin_lon_list)
 
     def convert_lat2binary(self, lat):
         lat = round(lat, 3) * 1000
-        bin_lat = '{0:b}'.format(int(lat)).zfill(self.configs.lat_size)
-        bin_lat_list = [int(i) for i in bin_lat]
+        bin_lat = str(bin(int(lat)))
 
-        if self.configs.use_graycode:
-            bin_lat_list = binary2graycode(bin_lat_list)
+        if bin_lat.startswith('-0b'):
+            bin_lat = '{0:b}'.format(int(-lat)).zfill(self.configs.lat_size - 1)
+
+            if self.configs.use_graycode:
+                bin_lat = binary2graycode(bin_lat)
+
+            bin_lat_list = [1] + [int(i) for i in bin_lat]
+        else:
+            bin_lat = '{0:b}'.format(int(lat)).zfill(self.configs.lat_size)
+            if self.configs.use_graycode:
+                bin_lat = binary2graycode(bin_lat)
+
+            bin_lat_list = [int(i) for i in bin_lat]
 
         assert len(bin_lat_list) == self.configs.lat_size, "ERROR"
         return np.array(bin_lat_list)
@@ -86,8 +106,21 @@ class DataGenerator(da.Dataset):
         alt = int(alt / 10)
         if alt > 15000:
             alt = 0
-        bin_alt = '{0:b}'.format(int(alt)).zfill(self.configs.alt_size)
-        bin_alt_list = [int(i) for i in bin_alt]
+        bin_alt = str(bin(alt))
+                
+        if bin_alt.startswith('-0b'):
+            bin_alt = '{0:b}'.format(int(-alt)).zfill(self.configs.alt_size - 1)
+
+            if self.configs.use_graycode:
+                bin_alt = binary2graycode(bin_alt)
+
+            bin_alt_list = [1] + [int(i) for i in bin_alt]
+        else:
+            bin_alt = '{0:b}'.format(int(alt)).zfill(self.configs.alt_size)
+            if self.configs.use_graycode:
+                bin_alt = binary2graycode(bin_alt)
+
+            bin_alt_list = [int(i) for i in bin_alt]
 
         if self.configs.use_graycode:
             bin_alt_list = binary2graycode(bin_alt_list)
