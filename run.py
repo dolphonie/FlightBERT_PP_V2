@@ -12,6 +12,7 @@ import numpy as np
 import time
 import argparse
 from sklearn import metrics
+from torch import nn
 
 data_worker = 0
 iscuda = torch.cuda.is_available()
@@ -79,7 +80,7 @@ class TrainClient():
 
     def init_model(self):
         print("Build model...")
-        self.model = FlightBERT_PP(config=self.configs)
+        self.model = nn.DataParallel(FlightBERT_PP(config=self.configs))
         self.model.to(device)
 
         total_pa = sum(p.numel() for p in self.model.parameters())
@@ -144,7 +145,7 @@ class TrainClient():
         for i, batch in enumerate(tq):
             batch_tmp = {}
             for k, v in batch.items():
-                v = torch.FloatTensor(v)
+                v = torch.FloatTensor(np.array(v))
                 batch_tmp[k] = v.to(device)
             batch = batch_tmp
 
@@ -215,7 +216,7 @@ class TrainClient():
         for i, batch in enumerate(data_loader):
             batch_tmp = {}
             for k, v in batch.items():
-                v = torch.FloatTensor(v)
+                v = torch.FloatTensor(np.array(v))
                 batch_tmp[k] = v.to(device)
             batch = batch_tmp
 

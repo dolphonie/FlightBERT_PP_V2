@@ -32,7 +32,6 @@ class DataGenerator(da.Dataset):
 
                 txt_path = os.path.join(root, f)
                 with open(txt_path, 'r') as fr:
-                    # patrick note: skip first line since it has a header
                     lines = fr.readlines()
 
                 # lines = lines[self.configs.data_period - 1::self.configs.data_period]
